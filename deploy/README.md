@@ -62,3 +62,7 @@ Lokalda `git push` (ýa-da `push-bundle.ps1`), serwerde `sudo bash /var/www/sdlo
 
 ## Docker (alternatiwa)
 `docker compose up -d --build` (mysql + api + web); `.env`-de `PUBLIC_URL`, `NEXT_PUBLIC_API_URL`, `CORS_ORIGINS` domen boýunça.
+
+## Awtomat maglumat (seed)
+`backend/seed/content.sql` — saýtyň mazmuny (menýu, habarlar, slaýdlar, sazlamalar, media, bannerlar) repo-da gelýär. API başlanda `menus` tablisasy boş bolsa ony özi ýükleýär; `admins` boş bolsa `superadmin` hasabyny döredýär (`ADMIN_PASSWORD` ýa-da tötänleýin parol → `backend/initial-admin-password.txt` we `journalctl -u sdlohom-api`). Şonuň üçin `git pull` + `deploy.sh` ýeterlik, dump ibermek hökman däl. Köne admin hasaplary (admin/sneg) we loglar seed-de ýok — gerek bolsa `DB_DUMP` bilen doly dump import ediň.
+Seed-i täzelemek (lokalda): `mysqldump -u root --no-create-info --replace --skip-triggers --skip-add-locks --skip-comments --complete-insert sdlohom menus news slides settings media banners user_groups user_files > backend/seed/content.sql` (soň `external_news_token` bahasyny boşadyň).

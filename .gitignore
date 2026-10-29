@@ -24,3 +24,6 @@ database/*.sql
 
 # --- files uploaded later through the admin panel are server data, but the migrated seed set is committed ---
 backend/uploads/**/*.tmp
+
+# first-run admin password written by the API (never commit)
+backend/initial-admin-password.txt

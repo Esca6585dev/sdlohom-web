@@ -267,6 +267,8 @@ MAX_UPLOAD_MB=64
 TRUST_PROXY=1
 IP_HASH_SALT=$IP_HASH_SALT
 EXTERNAL_NEWS_TOKEN=$EXTERNAL_NEWS_TOKEN
+# ilkinji başlanyşda admins boş bolsa "superadmin" şu parol bilen döredilýär (boş = tötänleýin parol, initial-admin-password.txt)
+ADMIN_PASSWORD=$ADMIN_PASSWORD
 EOF
 ok "backend/.env döredildi"; else ok "backend/.env bar (üýtgedilmedi)"; fi
 if [ ! -f frontend/.env.production ]; then
@@ -481,6 +483,7 @@ cat <<EOF
  TAMAM.  Saýt:  $([ $HAS_SSL = 1 ] && echo https || echo http)://www.$DOMAIN
          Admin: $([ $HAS_SSL = 1 ] && echo https || echo http)://www.$DOMAIN/admin
          API:   $([ $HAS_SSL = 1 ] && echo https || echo http)://www.$DOMAIN/api/v1/health
+$([ -f "$APP_DIR/backend/initial-admin-password.txt" ] && printf ' Admin hasaby (awtomat döredildi, girip paroly üýtgediň):  %s / %s\n' "$(sed -n 1p "$APP_DIR/backend/initial-admin-password.txt")" "$(sed -n 2p "$APP_DIR/backend/initial-admin-password.txt")")
  Sazlamalar: $CONF   |  Loglar: journalctl -u sdlohom-api -f / -u sdlohom-web -f
  Täzelemek: sudo bash $APP_DIR/deploy/install.sh   (ýa-da: sudo $APP_DIR/deploy/deploy.sh)
  Domeni üýtgetmek: sudo DOMAIN=taze.domen.tm bash $APP_DIR/deploy/install.sh

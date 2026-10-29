@@ -37,6 +37,17 @@ func main() {
 	if err := database.Migrate(db, migrationsDir); err != nil {
 		log.Fatalf("migrate: %v", err)
 	}
+	// Fresh database: load the public content shipped in the repo and create the first admin.
+	seedDir := os.Getenv("SEED_DIR")
+	if seedDir == "" {
+		seedDir = filepath.Join(filepath.Dir(migrationsDir), "seed")
+	}
+	if err := database.SeedIfEmpty(db, seedDir); err != nil {
+		log.Printf("seed: %v", err)
+	}
+	if err := database.EnsureAdmin(db, os.Getenv("ADMIN_PASSWORD"), filepath.Dir(migrationsDir)); err != nil {
+		log.Printf("bootstrap admin: %v", err)
+	}
 	if err := os.MkdirAll(cfg.UploadsDir, 0o755); err != nil {
 		log.Fatalf("uploads dir: %v", err)
 	}
