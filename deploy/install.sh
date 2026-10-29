@@ -225,17 +225,22 @@ CREATE USER IF NOT EXISTS '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';
 ALTER USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';
 GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'localhost'; FLUSH PRIVILEGES;" || die "MySQL-e girip bolmady (sudo mysql işleýärmi?)"
 tables="$(mysql -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$DB_NAME'")"
-if [ "${tables:-0}" = 0 ]; then
-    dump="$DB_DUMP"
+rows="$(mysql -N -e "SELECT IFNULL((SELECT COUNT(*) FROM \`$DB_NAME\`.admins),0)" 2>/dev/null || echo 0)"
+if [ -n "$DB_DUMP" ] && [ -f "$DB_DUMP" ]; then
+    # DB_DUMP açyk berilse hemişe import edilýär (dumpdaky tablisalar täzeden döredilýär)
+    log "Dump import edilýär: $DB_DUMP"
+    mysql --default-character-set=utf8mb4 "$DB_NAME" < "$DB_DUMP" && ok "import tamam"
+elif [ "${tables:-0}" = 0 ] || [ "${rows:-0}" = 0 ]; then
+    dump=""
     for cand in "$APP_DIR/database/sdlohom.sql" /root/sdlohom.sql "$HOME/sdlohom.sql" /home/*/sdlohom.sql; do [ -z "$dump" ] && [ -f "$cand" ] && dump="$cand"; done
-    if [ -n "$dump" ] && [ -f "$dump" ]; then
+    if [ -n "$dump" ]; then
         log "Baza boş — dump import edilýär: $dump"
         mysql --default-character-set=utf8mb4 "$DB_NAME" < "$dump" && ok "import tamam"
     else
-        warn "Baza boş we dump tapylmady — API başlanda boş tablisalar döreder. Soňra: mysql $DB_NAME < sdlohom.sql"
+        warn "Baza boş we dump tapylmady. Lokaldan iberiň: scp database\\sdlohom.sql ubuntu@SERWER:~/  soň: sudo DB_DUMP=~/sdlohom.sql bash install.sh"
     fi
 else
-    ok "bazada $tables tablisa bar (import geçildi)"
+    ok "bazada $tables tablisa, $rows admin bar (import geçildi)"
 fi
 
 # -----------------------------------------------------------------------------
