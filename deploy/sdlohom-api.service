@@ -1,0 +1,20 @@
+# /etc/systemd/system/sdlohom-api.service
+[Unit]
+Description=SDLOHOM API (Go Fiber)
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/sdlohom-web/backend
+EnvironmentFile=/var/www/sdlohom-web/backend/.env
+ExecStart=/var/www/sdlohom-web/backend/bin/api
+Restart=always
+RestartSec=3
+LimitNOFILE=65536
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

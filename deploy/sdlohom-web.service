@@ -1,0 +1,21 @@
+# /etc/systemd/system/sdlohom-web.service
+[Unit]
+Description=SDLOHOM web (Next.js)
+After=network.target sdlohom-api.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/sdlohom-web/frontend
+Environment=NODE_ENV=production
+Environment=PORT=3002
+EnvironmentFile=/var/www/sdlohom-web/frontend/.env.production
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

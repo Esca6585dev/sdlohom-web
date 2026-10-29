@@ -1,0 +1,26 @@
+# --- secrets / local env ---
+backend/.env
+frontend/.env.local
+frontend/.env.production
+*.pem
+*.key
+
+# --- build output ---
+backend/bin/
+frontend/.next/
+frontend/out/
+frontend/tsconfig.tsbuildinfo
+frontend/next-env.d.ts
+node_modules/
+
+# --- logs / temp ---
+*.log
+api.err.log
+.DS_Store
+Thumbs.db
+
+# --- database dumps (contain password hashes / logs: transfer separately, never commit) ---
+database/*.sql
+
+# --- files uploaded later through the admin panel are server data, but the migrated seed set is committed ---
+backend/uploads/**/*.tmp
