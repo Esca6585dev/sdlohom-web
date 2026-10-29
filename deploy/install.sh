@@ -371,6 +371,7 @@ log "nginx: $DOMAIN (SSL: $([ $HAS_SSL = 1 ] && echo "$SSL_CERT" || echo 'Ã½ok â
 SITE=/etc/nginx/sites-available/$DOMAIN
 common_locations() {
 cat <<EOF
+    server_tokens off;
     client_max_body_size 64m;
     gzip on;
     gzip_types text/plain text/css application/json application/javascript application/xml image/svg+xml;
